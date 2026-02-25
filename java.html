@@ -1,23 +1,528 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Increment Button</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Talent Compass</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7ff;
+      --card: #ffffff;
+      --primary: #3349ff;
+      --primary-soft: #e9ecff;
+      --text: #1f2552;
+      --muted: #6b7294;
+      --success: #0f9d58;
+      --border: #dce2ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 960px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(35, 49, 130, 0.08);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    h1, h2, h3, h4 { margin-top: 0; }
+    .muted { color: var(--muted); }
+    .grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    label {
+      font-size: 0.94rem;
+      display: block;
+      margin-bottom: 0.35rem;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.7rem;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+    .checkbox-chip {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.25rem 0.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      background: #fdfdff;
+    }
+    .checkbox-chip input { width: auto; }
+    .actions {
+      display: flex;
+      gap: 0.7rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 0.7rem 1rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .primary { background: var(--primary); color: #fff; }
+    .secondary { background: #eff2ff; color: var(--text); }
+    .hidden { display: none; }
+    .category {
+      margin: 1rem 0;
+      border-top: 1px solid var(--border);
+      padding-top: 0.9rem;
+    }
+    .category h4 {
+      color: var(--primary);
+      margin-bottom: 0.6rem;
+    }
+    .question {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .options label {
+      margin: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .image-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.65rem;
+      margin-top: 0.65rem;
+    }
+    .image-option {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.5rem;
+      display: grid;
+      gap: 0.45rem;
+      cursor: pointer;
+      background: #fff;
+    }
+    .image-option img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #e8ecff;
+    }
+    .image-option span {
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+    .image-option input { width: auto; }
+    .result-highlight {
+      border-left: 4px solid var(--success);
+      padding-left: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    .pill {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 0.82rem;
+      margin-right: 0.35rem;
+      margin-bottom: 0.3rem;
+    }
+  </style>
 </head>
 <body>
-    <h1>Counter: <span id="counter">0</span></h1>
-    <button onclick="incrementCounter()">Increment</button>
+  <div class="container">
+    <div class="card">
+      <h1 id="headline">Talent Compass</h1>
+      <p class="muted" id="introText">Discover your strengths, personality style, and practical career directions.</p>
+    </div>
 
-    <script>
-      
-        let count = 0;
+    <section id="step1" class="card">
+      <h2 id="step1Title">Step 1: Basic Details</h2>
+      <form id="detailsForm">
+        <div class="grid">
+          <div>
+            <label for="name" id="labelName">Name</label>
+            <input id="name" required />
+          </div>
+          <div>
+            <label for="age" id="labelAge">Age</label>
+            <input id="age" type="number" min="10" max="80" required />
+          </div>
+          <div>
+            <label for="gender" id="labelGender">Gender</label>
+            <select id="gender" required>
+              <option value="">Select</option>
+              <option>Female</option>
+              <option>Male</option>
+              <option>Non-binary</option>
+              <option>Prefer not to say</option>
+            </select>
+          </div>
+          <div>
+            <label for="classLevel" id="labelClass">Class / Current Stage</label>
+            <input id="classLevel" placeholder="e.g., B.Tech Final Year" required />
+          </div>
+        </div>
 
-        function incrementCounter() {
-            count++;
-      
-            document.getElementById("counter").textContent = count;
-        }
-    </script>
+        <div style="margin-top:1rem;">
+          <label id="labelKnown">Languages Known</label>
+          <div class="checkbox-group" id="languageChecks"></div>
+        </div>
+
+        <div style="margin-top:1rem; max-width:320px;">
+          <label for="preferredLanguage" id="labelPreferred">Preferred Language</label>
+          <select id="preferredLanguage" required>
+            <option value="">Select from known languages</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="primary" id="startButton">Start Personality Check</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="step2" class="card hidden">
+      <h2 id="step2Title">Step 2: Personality & Behaviour Questions</h2>
+      <p class="muted" id="step2Text">This section includes logical, emotional, situational, mentality and image-based questions.</p>
+      <form id="quizForm"></form>
+      <div class="actions">
+        <button type="button" class="secondary" id="backButton">Back</button>
+        <button type="button" class="primary" id="resultButton">Show My Talent Path</button>
+      </div>
+    </section>
+
+    <section id="step3" class="card hidden">
+      <h2 id="step3Title">Your Suggested Direction</h2>
+      <div id="resultContent"></div>
+      <div class="actions">
+        <button type="button" class="secondary" id="restartButton">Retake Assessment</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const translations = {
+      English: {
+        headline: "Talent Compass",
+        introText: "Discover your strengths, personality style, and practical career directions.",
+        step1Title: "Step 1: Basic Details",
+        labelName: "Name",
+        labelAge: "Age",
+        labelGender: "Gender",
+        labelClass: "Class / Current Stage",
+        labelKnown: "Languages Known",
+        labelPreferred: "Preferred Language",
+        startButton: "Start Personality Check",
+        step2Title: "Step 2: Personality & Behaviour Questions",
+        step2Text: "This section includes logical, emotional, situational, mentality and image-based questions.",
+        backButton: "Back",
+        resultButton: "Show My Talent Path",
+        step3Title: "Your Suggested Direction",
+        restartButton: "Retake Assessment",
+      },
+      Hindi: {
+        headline: "टैलेंट कम्पास",
+        introText: "अपनी ताकत, व्यक्तित्व शैली और उपयोगी करियर दिशा पहचानें।",
+        step1Title: "चरण 1: बुनियादी जानकारी",
+        labelName: "नाम",
+        labelAge: "उम्र",
+        labelGender: "लिंग",
+        labelClass: "कक्षा / वर्तमान स्तर",
+        labelKnown: "ज्ञात भाषाएँ",
+        labelPreferred: "पसंदीदा भाषा",
+        startButton: "पर्सनैलिटी चेक शुरू करें",
+        step2Title: "चरण 2: व्यक्तित्व और व्यवहार प्रश्न",
+        step2Text: "इसमें लॉजिकल, इमोशनल, सिचुएशनल, मानसिकता और इमेज-बेस्ड प्रश्न शामिल हैं।",
+        backButton: "वापस",
+        resultButton: "मेरा टैलेंट पाथ दिखाएँ",
+        step3Title: "आपकी सुझाई गई दिशा",
+        restartButton: "फिर से मूल्यांकन करें",
+      },
+      Telugu: {
+        headline: "టాలెంట్ కంపాస్",
+        introText: "మీ బలాలు, వ్యక్తిత్వ శైలి, సరైన కెరీర్ దిశను కనుగొనండి.",
+        step1Title: "దశ 1: ప్రాథమిక వివరాలు",
+        labelName: "పేరు",
+        labelAge: "వయస్సు",
+        labelGender: "లింగం",
+        labelClass: "క్లాస్ / ప్రస్తుత దశ",
+        labelKnown: "తెలిసిన భాషలు",
+        labelPreferred: "అభిరుచి భాష",
+        startButton: "పర్సనాలిటీ చెక్ ప్రారంభించండి",
+        step2Title: "దశ 2: వ్యక్తిత్వ & ప్రవర్తన ప్రశ్నలు",
+        step2Text: "ఇందులో లాజికల్, ఎమోషనల్, సిట్యుయేషనల్, మెంటాలిటీ మరియు ఇమేజ్ ప్రశ్నలు ఉన్నాయి.",
+        backButton: "వెనక్కి",
+        resultButton: "నా టాలెంట్ దారి చూపించండి",
+        step3Title: "మీకు సరిపోయే దిశ",
+        restartButton: "మళ్లీ ప్రయత్నించండి",
+      },
+    };
+
+    const languageOptions = ["English", "Hindi", "Telugu", "Tamil", "Kannada", "Malayalam"];
+    const categoriesOrder = ["logical", "emotional", "situational", "mentality", "image"];
+    const categoryLabel = {
+      logical: "Logical Thinking",
+      emotional: "Emotional Awareness",
+      situational: "Situational Response",
+      mentality: "Growth Mentality",
+      image: "Image-Based Choice",
+    };
+
+    function imageSvg(title, bg, shape) {
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='300' height='140'><rect width='100%' height='100%' fill='${bg}'/><text x='50%' y='22%' text-anchor='middle' font-size='18' fill='#1f2552' font-family='Arial'>${title}</text>${shape}</svg>`;
+      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+    }
+
+    const imageA = imageSvg("Option A", "#eef1ff", "<circle cx='75' cy='88' r='28' fill='#5265ff'/><rect x='140' y='63' width='110' height='50' rx='12' fill='#9ca8ff' />");
+    const imageB = imageSvg("Option B", "#f2fff4", "<rect x='50' y='55' width='78' height='62' rx='9' fill='#2a9d8f'/><polygon points='165,118 130,58 200,58' fill='#78c2b5' />");
+    const imageC = imageSvg("Option C", "#fff8ed", "<circle cx='70' cy='87' r='24' fill='#f4a261'/><circle cx='145' cy='87' r='24' fill='#e76f51'/><circle cx='220' cy='87' r='24' fill='#f4c27a' />");
+
+    const questions = [
+      { category: "logical", text: "I enjoy solving complex problems and puzzles.", trait: "analytical" },
+      { category: "logical", text: "I prefer data and logic before making decisions.", trait: "analytical" },
+      { category: "emotional", text: "I quickly understand what people around me are feeling.", trait: "social" },
+      { category: "emotional", text: "When a friend is stressed, I naturally listen and support.", trait: "social" },
+      { category: "situational", text: "In a tight deadline, I split tasks and execute calmly.", trait: "practical" },
+      { category: "situational", text: "If a plan fails, I quickly design an alternate approach.", trait: "entrepreneurial" },
+      { category: "mentality", text: "I treat failures as feedback and improve the next version.", trait: "entrepreneurial" },
+      { category: "mentality", text: "I keep learning new skills even without external pressure.", trait: "creative" },
+      {
+        category: "image",
+        type: "image",
+        text: "Pick the image that best matches your natural work style:",
+        trait: "practical",
+        options: [
+          { label: "Structured planner", score: 5, img: imageA },
+          { label: "Team collaborator", score: 4, img: imageB },
+          { label: "Flexible explorer", score: 3, img: imageC },
+        ]
+      },
+      {
+        category: "image",
+        type: "image",
+        text: "Choose the visual that reflects how you solve new challenges:",
+        trait: "creative",
+        options: [
+          { label: "Step-by-step builder", score: 3, img: imageA },
+          { label: "Human-centered thinker", score: 4, img: imageB },
+          { label: "Idea experimenter", score: 5, img: imageC },
+        ]
+      }
+    ];
+
+    const options = [
+      { label: "Strongly Disagree", score: 1 },
+      { label: "Disagree", score: 2 },
+      { label: "Neutral", score: 3 },
+      { label: "Agree", score: 4 },
+      { label: "Strongly Agree", score: 5 },
+    ];
+
+    const traitMap = {
+      analytical: { heading: "Analytical Strength", careers: ["Software Development", "Data Analysis", "Cybersecurity", "Research"] },
+      social: { heading: "People-Centric Strength", careers: ["Teaching", "Counselling", "HR", "Community Leadership"] },
+      creative: { heading: "Creative Strength", careers: ["UI/UX Design", "Content Creation", "Branding", "Product Design"] },
+      practical: { heading: "Execution Strength", careers: ["Operations", "Project Coordination", "Quality Assurance", "Civil Services Preparation"] },
+      entrepreneurial: { heading: "Builder Strength", careers: ["Startup Path", "Freelancing", "Business Development", "Product Ownership"] },
+    };
+
+    const languageChecks = document.getElementById("languageChecks");
+    const preferredLanguageSelect = document.getElementById("preferredLanguage");
+    const detailsForm = document.getElementById("detailsForm");
+    const quizForm = document.getElementById("quizForm");
+    const step1 = document.getElementById("step1");
+    const step2 = document.getElementById("step2");
+    const step3 = document.getElementById("step3");
+
+    function initLanguageChecks() {
+      languageOptions.forEach((lang) => {
+        const chip = document.createElement("label");
+        chip.className = "checkbox-chip";
+        chip.innerHTML = `<input type="checkbox" value="${lang}" /> ${lang}`;
+        languageChecks.appendChild(chip);
+      });
+      languageChecks.addEventListener("change", () => {
+        const selected = [...languageChecks.querySelectorAll("input:checked")].map((c) => c.value);
+        preferredLanguageSelect.innerHTML = "<option value=''>Select from known languages</option>";
+        selected.forEach((lang) => {
+          const opt = document.createElement("option");
+          opt.value = lang;
+          opt.textContent = lang;
+          preferredLanguageSelect.appendChild(opt);
+        });
+      });
+    }
+
+    function renderQuestions() {
+      quizForm.innerHTML = "";
+      categoriesOrder.forEach((category) => {
+        const categoryQuestions = questions.filter((q) => q.category === category);
+        if (!categoryQuestions.length) return;
+
+        const categoryWrap = document.createElement("section");
+        categoryWrap.className = "category";
+        categoryWrap.innerHTML = `<h4>${categoryLabel[category]}</h4>`;
+
+        categoryQuestions.forEach((q) => {
+          const globalIndex = questions.indexOf(q);
+          const wrapper = document.createElement("div");
+          wrapper.className = "question";
+          wrapper.innerHTML = `<strong>Q${globalIndex + 1}. ${q.text}</strong>`;
+
+          if (q.type === "image") {
+            const imageWrap = document.createElement("div");
+            imageWrap.className = "image-options";
+            q.options.forEach((opt) => {
+              const label = document.createElement("label");
+              label.className = "image-option";
+              label.innerHTML = `<img src='${opt.img}' alt='${opt.label}' /><span><input required type='radio' name='q${globalIndex}' value='${opt.score}' style='margin-right:6px;'/>${opt.label}</span>`;
+              imageWrap.appendChild(label);
+            });
+            wrapper.appendChild(imageWrap);
+          } else {
+            const optionWrap = document.createElement("div");
+            optionWrap.className = "options";
+            options.forEach((opt) => {
+              const label = document.createElement("label");
+              label.innerHTML = `<input required type='radio' name='q${globalIndex}' value='${opt.score}' style='margin-right:6px;'/>${opt.label}`;
+              optionWrap.appendChild(label);
+            });
+            wrapper.appendChild(optionWrap);
+          }
+          categoryWrap.appendChild(wrapper);
+        });
+        quizForm.appendChild(categoryWrap);
+      });
+    }
+
+    function applyTranslation(lang) {
+      const t = translations[lang] || translations.English;
+      Object.entries(t).forEach(([id, text]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      });
+    }
+
+    function getTopTraits() {
+      const totals = { analytical: 0, social: 0, creative: 0, practical: 0, entrepreneurial: 0 };
+      questions.forEach((q, idx) => {
+        const checked = quizForm.querySelector(`input[name='q${idx}']:checked`);
+        totals[q.trait] += checked ? Number(checked.value) : 0;
+      });
+      return Object.entries(totals).sort((a, b) => b[1] - a[1]).slice(0, 2);
+    }
+
+    function showResult(profile, topTraits) {
+      const container = document.getElementById("resultContent");
+      const [first, second] = topTraits;
+      const firstInfo = traitMap[first[0]];
+      const secondInfo = traitMap[second[0]];
+      container.innerHTML = `
+        <div class='result-highlight'>
+          <h3>${profile.name}, your strongest area is: ${firstInfo.heading}</h3>
+          <p class='muted'>Your second strongest area is: ${secondInfo.heading}.</p>
+        </div>
+        <p><span class='pill'>Age: ${profile.age}</span><span class='pill'>Stage: ${profile.classLevel}</span><span class='pill'>Preferred language: ${profile.language}</span></p>
+        <h3>Recommended Career Directions</h3>
+        <ul>${firstInfo.careers.concat(secondInfo.careers).slice(0, 6).map((career) => `<li>${career}</li>`).join("")}</ul>
+        <h3>30-Day Clarity Plan</h3>
+        <ol>
+          <li>Pick 2 careers above and watch 3 real-day-in-life videos for each.</li>
+          <li>Build one small project (or case study) in your top direction.</li>
+          <li>Speak to one mentor/senior each week and note what excites you most.</li>
+          <li>Track your energy and confidence after each activity.</li>
+        </ol>`;
+      step2.classList.add("hidden");
+      step3.classList.remove("hidden");
+    }
+
+    detailsForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const selectedLangs = [...languageChecks.querySelectorAll("input:checked")];
+      if (!selectedLangs.length) {
+        alert("Please select at least one known language.");
+        return;
+      }
+      if (!preferredLanguageSelect.value) {
+        alert("Please choose your preferred language.");
+        return;
+      }
+      applyTranslation(preferredLanguageSelect.value);
+      step1.classList.add("hidden");
+      step2.classList.remove("hidden");
+    });
+
+    document.getElementById("resultButton").addEventListener("click", () => {
+      const allAnswered = questions.every((_, idx) => quizForm.querySelector(`input[name='q${idx}']:checked`));
+      if (!allAnswered) {
+        alert("Please answer all questions.");
+        return;
+      }
+      const profile = {
+        name: document.getElementById("name").value,
+        age: document.getElementById("age").value,
+        classLevel: document.getElementById("classLevel").value,
+        language: preferredLanguageSelect.value,
+      };
+      showResult(profile, getTopTraits());
+    });
+
+    document.getElementById("backButton").addEventListener("click", () => {
+      step2.classList.add("hidden");
+      step1.classList.remove("hidden");
+    });
+
+    document.getElementById("restartButton").addEventListener("click", () => {
+      step3.classList.add("hidden");
+      step1.classList.remove("hidden");
+      detailsForm.reset();
+      preferredLanguageSelect.innerHTML = "<option value=''>Select from known languages</option>";
+      applyTranslation("English");
+      renderQuestions();
+    });
+
+    initLanguageChecks();
+    renderQuestions();
+  </script>
 </body>
 </html>
